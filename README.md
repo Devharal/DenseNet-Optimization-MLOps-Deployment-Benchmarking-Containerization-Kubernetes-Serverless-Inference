@@ -1,6 +1,7 @@
 # DenseNet Optimization & Benchmarking Suite
 
 A comprehensive MLOps solution for benchmarking and optimizing DenseNet-121 architecture for production deployment, featuring containerized workflows, automated benchmarking, and serverless deployment capabilities.
+![Architecture](02-k8s-architecture-1.gif)
 
 ## 📋 Table of Contents
 

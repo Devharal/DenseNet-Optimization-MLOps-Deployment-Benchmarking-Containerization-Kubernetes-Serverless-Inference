@@ -2,6 +2,10 @@
 
 This project provides a complete, production-ready solution for deploying DenseNet inference API on Kubernetes using Kind cluster. It's designed as an alternative to KNative that's easier to implement and avoids common image pulling issues.
 
+![Architecture](k8arch.png)
+
+
+
 ## 🏗️ Architecture Overview
 
 - **FastAPI**: High-performance web framework for serving ML models
