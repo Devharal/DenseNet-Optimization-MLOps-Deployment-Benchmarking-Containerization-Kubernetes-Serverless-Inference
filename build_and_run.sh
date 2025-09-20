@@ -345,8 +345,8 @@ main() {
     echo ""
     
     # Execute pipeline
-    # check_prerequisites
-    # setup_directories
+    check_prerequisites
+    setup_directories
     cleanup_old
     build_image
     start_tensorboard
