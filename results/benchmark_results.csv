@@ -1,0 +1,13 @@
+model_variant,batch_size,device,ram_usage_mb,vram_usage_mb,cpu_utilization_pct,gpu_utilization_pct,latency_ms,throughput_samples_sec,accuracy_top1,accuracy_top5,model_size_mb,optimization_technique
+densenet121_baseline,1,cuda,1392.81,803.0,0.0,7.0,48.22,20.74,0.0,0.0,30.76,none
+densenet121_baseline,4,cuda,1519.18,841.0,0.0,18.0,165.3,24.2,0.0,0.0,30.76,none
+densenet121_baseline,8,cuda,1624.21,899.0,0.0,20.0,108.21,73.93,0.0,0.0,30.76,none
+densenet121_quantized,1,cpu,1746.6,911.0,28.2,0.0,178.12,5.61,0.0,0.0,26.85,dynamic_quantization
+densenet121_quantized,4,cpu,1989.79,910.0,16.0,0.0,556.05,7.19,0.0,0.0,26.85,dynamic_quantization
+densenet121_quantized,8,cpu,2083.02,973.0,0.0,20.0,1741.16,4.59,0.0,0.0,26.85,dynamic_quantization
+densenet121_pruned,1,cuda,1893.55,951.0,0.0,29.0,86.54,11.56,0.0,10.0,30.76,structured_pruning
+densenet121_pruned,4,cuda,1897.82,935.0,0.0,2.0,95.63,41.83,0.0,0.0,30.76,structured_pruning
+densenet121_pruned,8,cuda,1903.8,936.0,1.7,25.0,70.33,113.75,0.0,0.0,30.76,structured_pruning
+densenet121_distilled,1,cuda,1957.11,943.0,7.7,3.0,5.64,177.16,0.0,0.0,0.81,knowledge_distillation
+densenet121_distilled,4,cuda,2134.99,954.0,18.5,22.0,15.89,251.72,0.0,0.0,0.81,knowledge_distillation
+densenet121_distilled,8,cuda,2286.11,954.0,15.7,21.0,35.36,226.24,0.0,0.0,0.81,knowledge_distillation

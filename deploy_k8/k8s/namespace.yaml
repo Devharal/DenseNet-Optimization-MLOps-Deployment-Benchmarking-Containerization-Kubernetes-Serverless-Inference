@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: densenet-serving
+  labels:
+    name: densenet-serving
+    app: densenet-api
+    environment: development
+    team: ml-ops
+  annotations:
+    description: "Namespace for DenseNet model serving infrastructure"
+    created-by: "densenet-deployment-script"
+    
+---
+# Resource Quota for the namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: densenet-quota
+  namespace: densenet-serving
+spec:
+  hard:
+    # Compute resources
+    requests.cpu: "10"      # Total CPU requests
+    requests.memory: 20Gi   # Total memory requests  
+    limits.cpu: "20"        # Total CPU limits
+    limits.memory: 40Gi     # Total memory limits
+    
+    # Storage resources
+    requests.storage: 50Gi  # Total storage requests
+    persistentvolumeclaims: "10"
+    
+    # Object counts
+    pods: "50"
+    services: "10"
+    secrets: "20"
+    configmaps: "20"
+    persistentvolumeclaims: "10"
+    
+    # LoadBalancer services
+    services.loadbalancers: "5"
+    
+    # NodePort services  
+    services.nodeports: "10"
+
+---
+# Network Policy for namespace isolation
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: densenet-network-policy
+  namespace: densenet-serving
+spec:
+  podSelector: {}  # Apply to all pods in namespace
+  policyTypes:
+  - Ingress
+  - Egress
+  
+  ingress:
+  # Allow ingress from same namespace
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: densenet-serving
+  
+  # Allow ingress from kube-system (for health checks)
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+  
+  # Allow external ingress on specific ports
+  - from: []  # From anywhere
+    ports:
+    - protocol: TCP
+      port: 8000  # API port
+    - protocol: TCP  
+      port: 80    # Service port
+  
+  egress:
+  # Allow all egress (for model downloads, external APIs, etc.)
+  - {}
+  
+  # Alternatively, restrict egress:
+  # # Allow DNS
+  # - to: []
+  #   ports:
+  #   - protocol: UDP
+  #     port: 53
+  # 
+  # # Allow external HTTPS (for model downloads)
+  # - to: []
+  #   ports:
+  #   - protocol: TCP
+  #     port: 443
+  # 
+  # # Allow communication within namespace
+  # - to:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         name: densenet-serving
+
+---
+# Limit Range for pods in namespace
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: densenet-limits
+  namespace: densenet-serving
+spec:
+  limits:
+  # Pod limits
+  - type: Pod
+    max:
+      cpu: "4"
+      memory: 8Gi
+    min:
+      cpu: 100m
+      memory: 128Mi
+  
+  # Container limits  
+  - type: Container
+    max:
+      cpu: "2"
+      memory: 4Gi
+    min:
+      cpu: 100m
+      memory: 128Mi
+    default:
+      cpu: 500m
+      memory: 1Gi
+    defaultRequest:
+      cpu: 200m
+      memory: 512Mi
+  
+  # PVC limits
+  - type: PersistentVolumeClaim
+    max:
+      storage: 10Gi
+    min:
+      storage: 1Gi

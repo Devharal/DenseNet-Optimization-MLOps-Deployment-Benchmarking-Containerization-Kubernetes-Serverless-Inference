@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: densenet-config
+  namespace: densenet-serving
+  labels:
+    app: densenet-api
+    component: config
+data:
+  # Model Configuration
+  MODEL_NAME: "densenet121_optimized"
+  MODEL_PATH: "/app/models"
+  NUM_CLASSES: "1000"
+  
+  # API Configuration
+  BATCH_SIZE_LIMIT: "32"
+  MAX_REQUEST_SIZE: "10485760"  # 10MB in bytes
+  API_TIMEOUT: "60"
+  
+  # Logging Configuration
+  LOG_LEVEL: "INFO"
+  LOG_FORMAT: "json"
+  ACCESS_LOG: "true"
+  
+  # Performance Configuration
+  WORKERS: "1"
+  MAX_CONCURRENT_REQUESTS: "100"
+  PREFETCH_FACTOR: "2"
+  
+  # Optimization Settings
+  TORCH_NUM_THREADS: "4"
+  OMP_NUM_THREADS: "4"
+  CUDA_VISIBLE_DEVICES: ""  # CPU only, set to "0" for GPU
+  
+  # Health Check Configuration
+  HEALTH_CHECK_INTERVAL: "30"
+  READINESS_TIMEOUT: "5"
+  LIVENESS_TIMEOUT: "10"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: densenet-serving
+  labels:
+    app: nginx-proxy
+    component: config
+data:
+  nginx.conf: |
+    upstream densenet_backend {
+        server densenet-api-service:80;
+    }
+    
+    server {
+        listen 80;
+        server_name _;
+        
+        # Security headers
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        
+        # Rate limiting
+        limit_req_zone $binary_remote_addr zone=api:10m rate=100r/m;
+        
+        # Health check endpoint
+        location /health {
+            proxy_pass http://densenet_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 10s;
+            proxy_read_timeout 10s;
+        }
+        
+        # Main API endpoints
+        location / {
+            limit_req zone=api burst=20 nodelay;
+            
+            proxy_pass http://densenet_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Timeouts
+            proxy_connect_timeout 10s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            # Buffer settings for large requests (images)
+            client_max_body_size 10M;
+            proxy_buffering on;
+            proxy_buffer_size 4k;
+            proxy_buffers 8 4k;
+            proxy_busy_buffers_size 8k;
+        }
+        
+        # Static files (if any)
+        location /static/ {
+            alias /var/www/static/;
+            expires 1d;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        # Metrics endpoint (if using prometheus)
+        location /metrics {
+            proxy_pass http://densenet_backend;
+            allow 10.0.0.0/8;
+            allow 172.16.0.0/12;
+            allow 192.168.0.0/16;
+            deny all;
+        }
+    }
+
+---
+# Secrets for sensitive configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: densenet-secrets
+  namespace: densenet-serving
+  labels:
+    app: densenet-api
+    component: secrets
+type: Opaque
+data:
+  # Base64 encoded values
+  # echo -n "your-secret" | base64
+  API_KEY: ""  # Optional API key for authentication
+  MODEL_LICENSE_KEY: ""  # Optional model license
+  PROMETHEUS_TOKEN: ""  # Optional monitoring token
+stringData:
+  # Plain text values (will be base64 encoded automatically)
+  DATABASE_URL: "postgresql://user:pass@localhost:5432/metrics"  # If using metrics DB
+  REDIS_URL: "redis://localhost:6379/0"  # If using Redis for caching

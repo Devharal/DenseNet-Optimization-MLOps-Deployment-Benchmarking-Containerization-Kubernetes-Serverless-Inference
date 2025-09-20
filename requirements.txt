@@ -1,0 +1,40 @@
+# PyTorch and related packages
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# TensorBoard for profiling and visualization
+tensorboard>=2.13.0
+torch-tb-profiler>=0.4.0
+
+# Data science and computation
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Image processing
+Pillow>=9.5.0
+opencv-python>=4.8.0
+
+# System monitoring
+psutil>=5.9.0
+GPUtil>=1.4.0
+nvidia-ml-py>=12.515.0
+
+# Neural network optimization
+torch-pruning>=1.2.0
+
+# Utilities
+tqdm>=4.65.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Development and testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Container health monitoring
+py3nvml>=0.2.7
+
+# Additional ML utilities
+scikit-learn>=1.3.0
