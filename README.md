@@ -88,6 +88,12 @@ For custom configurations:
 make benchmark
 
 ```
+## Deployment Guide
+
+For detailed deployment instructions, please visit the [`deploy_k8`](./deploy_k8) folder.  
+It contains the **complete deployment guide using Kubernetes (K8s) and FastAPI**.
+
+
 ## Usage Guide
 
 ### Basic Benchmarking
@@ -238,6 +244,24 @@ TensorBoard provides interactive visualizations:
 ├── docker-compose.yml     # Multi-service orchestration
 ├── requirements.txt       # Python dependencies
 ├── build_and_run.sh      # Main execution script
-└── README.md             # This documentation
+└── README.md
+├── deploy_k8/
+└── app/
+   │   └── main.py                 # FastAPI application
+   ├── k8s/
+   │   ├── namespace.yaml         # Kubernetes namespace
+   │   ├── deployment.yaml        # Application deployment
+   │   ├── service.yaml          # Service configuration
+   │   ├── hpa.yaml              # Horizontal Pod Autoscaler
+   │   └── configmap.yaml        # Configuration
+   ├── kind-config.yaml          # Kind cluster configuration
+   ├── Dockerfile               # Container definition
+   ├── requirements.txt         # Python dependencies
+   ├── imagenet_classes.json    # ImageNet class labels
+   ├── setup-cluster.sh         # Cluster setup automation
+   ├── deploy-kubernetes.sh     # Complete deployment script
+   ├── test_api.py             # API testing utilities
+   ├── cleanup.sh              # Cleanup script
+   └── README.md                        
 ```
 
