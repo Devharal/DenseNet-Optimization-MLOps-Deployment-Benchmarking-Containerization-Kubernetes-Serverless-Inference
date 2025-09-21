@@ -3,7 +3,7 @@
 A comprehensive MLOps solution for benchmarking and optimizing DenseNet-121 architecture for production deployment, featuring containerized workflows, automated benchmarking, and serverless deployment capabilities.
 ![Architecture](02-k8s-architecture-1.gif)
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Project Overview](#project-overview)
 - [Features](#features)
@@ -17,7 +17,7 @@ A comprehensive MLOps solution for benchmarking and optimizing DenseNet-121 arch
 - [Known Limitations](#known-limitations)
 - [Future Improvements](#future-improvements)
 
-## 🎯 Project Overview
+## Project Overview
 
 This project implements a complete MLOps pipeline for DenseNet-121 optimization, featuring:
 
@@ -27,7 +27,7 @@ This project implements a complete MLOps pipeline for DenseNet-121 optimization,
 - **Serverless Architecture**: KNative deployment on Kubernetes for auto-scaling inference
 - **Production-Ready Monitoring**: Prometheus metrics, health checks, and observability
 
-## ✨ Features
+## Features
 
 ### Core Capabilities
 - **Multi-Technique Optimization**: Compare baseline vs. optimized models
@@ -42,7 +42,7 @@ This project implements a complete MLOps pipeline for DenseNet-121 optimization,
 3. **Knowledge Distillation**: Create compact student models
 4. **TensorRT Optimization**: GPU acceleration with optimized kernels
 
-## 🚀 Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 - Docker Engine 20.10+
@@ -88,7 +88,7 @@ For custom configurations:
 make benchmark
 
 ```
-## 📖 Usage Guide
+## Usage Guide
 
 ### Basic Benchmarking
 
@@ -117,7 +117,7 @@ model = benchmark.load_base_model()
 results = benchmark.benchmark_model(model, "custom_test", "baseline")
 ```
 
-## 🔧 Optimization Approaches
+## Optimization Approaches
 
 ### 1. Dynamic Quantization
 **Technique**: Convert floating-point weights to 8-bit integers
@@ -147,7 +147,7 @@ results = benchmark.benchmark_model(model, "custom_test", "baseline")
 - **Accuracy Impact**: Minimal
 - **Use Case**: GPU inference servers, high-throughput scenarios
 
-## 📊 Results Analysis
+## Results Analysis
 
 ### Performance Metrics
 
@@ -179,7 +179,7 @@ TensorBoard provides interactive visualizations:
 - **Memory Profiles**: Allocation patterns over time
 - **Accuracy Comparison**: Trade-off analysis
 
-## 📈 Performance Benchmarks
+## Performance Benchmarks
 
 ### Baseline Performance (DenseNet-121)
 - **Model Size**: 28.7 MB
@@ -196,7 +196,7 @@ TensorBoard provides interactive visualizations:
 | Distillation | 60% | 3.6x | 93.6% |
 | TensorRT | - | 4.2x | 100% |
 
-## ⚖️ Trade-offs Discussion
+## Trade-offs Discussion
 
 ### Performance vs. Accuracy
 - **Quantization**: Best balance of speed and accuracy retention
@@ -210,7 +210,7 @@ TensorBoard provides interactive visualizations:
 - **Serverless**: Auto-scaling benefits vs. cold-start latency
 
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 ### Current Limitations
 1. **GPU Support**: Requires NVIDIA Docker runtime for GPU benchmarking
@@ -229,7 +229,7 @@ TensorBoard provides interactive visualizations:
 - Limited batch size testing (max 32)
 - Memory constraints on large models
 
-## 🛠️ Development Guide
+## Development Guide
 
 ### Project Structure
 ```
@@ -241,24 +241,3 @@ TensorBoard provides interactive visualizations:
 └── README.md             # This documentation
 ```
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-For questions, issues, or contributions:
-- **Email**: satish.jasthi@satsure.co
-- **Issues**: GitHub Issues page
-- **Documentation**: This README and inline code comments
-
-## 🎉 Acknowledgments
-
-- **PyTorch Team**: For the excellent deep learning framework
-- **KNative Community**: For serverless Kubernetes capabilities
-- **NVIDIA**: For GPU optimization tools and techniques
-- **Hugging Face**: For model optimization inspirations
-
----
-
-**Built with ❤️ for the MLOps community**

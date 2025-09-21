@@ -6,7 +6,7 @@ This project provides a complete, production-ready solution for deploying DenseN
 
 
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 - **FastAPI**: High-performance web framework for serving ML models
 - **Kind Kubernetes**: Local Kubernetes cluster for development and testing
@@ -14,7 +14,7 @@ This project provides a complete, production-ready solution for deploying DenseN
 - **Health Checks**: Built-in readiness and liveness probes
 - **Optimized Model**: TorchScript compilation for better inference performance
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 densenet-kubernetes/
@@ -37,7 +37,7 @@ densenet-kubernetes/
 └── README.md               # This file
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -73,7 +73,7 @@ This will:
 4. Run benchmark tests
 5. Provide access URLs
 
-## 🛠️ Manual Setup (Step by Step)
+## Manual Setup (Step by Step)
 
 ### 1. Setup Kind Cluster
 
@@ -107,7 +107,7 @@ kubectl get svc -n densenet-serving
 curl http://localhost:30080/health
 ```
 
-## 🔗 API Endpoints
+## API Endpoints
 
 Once deployed, the API is available at `http://localhost:30080`:
 
@@ -135,7 +135,7 @@ Content-Type: application/json
 ### Interactive Documentation
 Visit `http://localhost:30080/docs` for Swagger UI documentation.
 
-## 🧪 Testing
+## Testing
 
 ### Automated Testing
 ```bash
@@ -155,7 +155,7 @@ curl -X POST "http://localhost:30080/predict" \
      -d '{"image": "'$(base64 -i test_image.jpg)'", "batch_size": 4}'
 ```
 
-## 📊 Monitoring and Scaling
+## Monitoring and Scaling
 
 ### Check Auto-scaling Status
 ```bash
@@ -180,7 +180,7 @@ kubectl top pods -n densenet-serving
 kubectl describe hpa densenet-api-hpa -n densenet-serving
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -212,7 +212,7 @@ targetCPUUtilizationPercentage: 70
 targetMemoryUtilizationPercentage: 80
 ```
 
-## 🔧 Optimization Features
+## Optimization Features
 
 1. **TorchScript Compilation**: Model compiled for faster inference
 2. **Optimize for Inference**: PyTorch optimization applied
@@ -220,7 +220,7 @@ targetMemoryUtilizationPercentage: 80
 4. **Connection Pooling**: Efficient request handling
 5. **Health Checks**: Kubernetes-native health monitoring
 
-## 📈 Performance Benchmarks
+## Performance Benchmarks
 
 Example performance metrics:
 
@@ -230,7 +230,7 @@ Example performance metrics:
 | 4          | 120          | 33               | 1400        |
 | 8          | 200          | 40               | 1600        |
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -278,7 +278,7 @@ kubectl describe deployment densenet-api -n densenet-serving
 kubectl exec -it <pod-name> -n densenet-serving -- /bin/bash
 ```
 
-## 🧹 Cleanup
+## Cleanup
 
 ### Quick Cleanup
 ```bash
@@ -297,7 +297,7 @@ docker rmi densenet-inference:latest
 rm -rf results/ logs/ api_test_results.json
 ```
 
-## 🆚 Comparison with KNative
+## Comparison with KNative
 
 | Feature | This Solution | KNative |
 |---------|---------------|---------|
@@ -309,7 +309,7 @@ rm -rf results/ logs/ api_test_results.json
 | Debugging | Easy | Moderate |
 | Production Ready | Yes | Yes |
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 1. **GPU Support**: Add CUDA-enabled containers
 2. **Model Versioning**: A/B testing between model versions  
@@ -318,7 +318,7 @@ rm -rf results/ logs/ api_test_results.json
 5. **Security**: HTTPS, authentication, RBAC
 6. **Multi-cluster**: Deploy across multiple clusters
 
-## 📋 Requirements Met
+## Requirements Met
 
 ✅ **Serverless-like Features**:
 - Auto-scaling (2-10 replicas)
@@ -344,25 +344,3 @@ rm -rf results/ logs/ api_test_results.json
 - Health checks
 - Proper documentation
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 📞 Support
-
-For questions or issues:
-- Create an issue in the repository
-- Check the troubleshooting section
-- Review Kubernetes and Docker documentation
-
----
-
-**Note**: This solution provides a robust alternative to KNative that's easier to implement and debug, while still providing enterprise-grade features like auto-scaling, health checks, and high availability.
