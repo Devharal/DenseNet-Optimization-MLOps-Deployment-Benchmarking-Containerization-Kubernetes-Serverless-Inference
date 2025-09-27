@@ -156,18 +156,6 @@ results = benchmark.benchmark_model(model, "custom_test", "baseline")
 
 ## Results Analysis
 
-### Performance Metrics
-
-The benchmark suite measures:
-
-| Metric | Description | Importance |
-|--------|-------------|------------|
-| **Latency** | Time per batch (ms) | User experience |
-| **Throughput** | Samples/second | System capacity |
-| **Memory Usage** | RAM/VRAM consumption | Resource efficiency |
-| **Model Size** | Storage requirements | Deployment overhead |
-| **Accuracy** | Top-1/Top-5 metrics | Quality preservation |
-
 ### Results
 
 ```csv
@@ -186,7 +174,6 @@ densenet121_distilled,4,cuda,2134.99,954.0,18.5,22.0,15.89,251.72,0.0,0.0,0.81,k
 densenet121_distilled,8,cuda,2286.11,954.0,15.7,21.0,35.36,226.24,0.0,0.0,0.81,knowledge_distillation
 
 ```
-
 ### Visualization
 
 TensorBoard provides interactive visualizations:
