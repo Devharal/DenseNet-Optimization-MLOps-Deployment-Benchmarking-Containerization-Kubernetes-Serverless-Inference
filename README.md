@@ -153,12 +153,6 @@ results = benchmark.benchmark_model(model, "custom_test", "baseline")
 - **Accuracy Impact**: Significant (5-10% degradation)
 - **Use Case**: Edge deployment, real-time applications
 
-### 4. TensorRT Optimization
-**Technique**: GPU kernel fusion and optimization
-- **Memory Optimization**: Efficient GPU memory usage
-- **Speed Improvement**: 2-5x faster on GPU
-- **Accuracy Impact**: Minimal
-- **Use Case**: GPU inference servers, high-throughput scenarios
 
 ## Results Analysis
 
@@ -174,14 +168,23 @@ The benchmark suite measures:
 | **Model Size** | Storage requirements | Deployment overhead |
 | **Accuracy** | Top-1/Top-5 metrics | Quality preservation |
 
-### Sample Results
+### Results
 
 ```csv
-model_variant,batch_size,latency_ms,throughput_samples_sec,accuracy_top1,model_size_mb
-densenet121_baseline,1,45.2,22.1,76.2,28.7
-densenet121_quantized,1,18.3,54.6,75.8,7.2
-densenet121_pruned,1,28.1,35.6,74.1,17.2
-densenet121_distilled,1,12.5,80.0,71.3,11.4
+model_variant,batch_size,device,ram_usage_mb,vram_usage_mb,cpu_utilization_pct,gpu_utilization_pct,latency_ms,throughput_samples_sec,accuracy_top1,accuracy_top5,model_size_mb,optimization_technique
+densenet121_baseline,1,cuda,1392.81,803.0,0.0,7.0,48.22,20.74,0.0,0.0,30.76,none
+densenet121_baseline,4,cuda,1519.18,841.0,0.0,18.0,165.3,24.2,0.0,0.0,30.76,none
+densenet121_baseline,8,cuda,1624.21,899.0,0.0,20.0,108.21,73.93,0.0,0.0,30.76,none
+densenet121_quantized,1,cpu,1746.6,911.0,28.2,0.0,178.12,5.61,0.0,0.0,26.85,dynamic_quantization
+densenet121_quantized,4,cpu,1989.79,910.0,16.0,0.0,556.05,7.19,0.0,0.0,26.85,dynamic_quantization
+densenet121_quantized,8,cpu,2083.02,973.0,0.0,20.0,1741.16,4.59,0.0,0.0,26.85,dynamic_quantization
+densenet121_pruned,1,cuda,1893.55,951.0,0.0,29.0,86.54,11.56,0.0,10.0,30.76,structured_pruning
+densenet121_pruned,4,cuda,1897.82,935.0,0.0,2.0,95.63,41.83,0.0,0.0,30.76,structured_pruning
+densenet121_pruned,8,cuda,1903.8,936.0,1.7,25.0,70.33,113.75,0.0,0.0,30.76,structured_pruning
+densenet121_distilled,1,cuda,1957.11,943.0,7.7,3.0,5.64,177.16,0.0,0.0,0.81,knowledge_distillation
+densenet121_distilled,4,cuda,2134.99,954.0,18.5,22.0,15.89,251.72,0.0,0.0,0.81,knowledge_distillation
+densenet121_distilled,8,cuda,2286.11,954.0,15.7,21.0,35.36,226.24,0.0,0.0,0.81,knowledge_distillation
+
 ```
 
 ### Visualization
@@ -194,28 +197,93 @@ TensorBoard provides interactive visualizations:
 
 ## Performance Benchmarks
 
-### Baseline Performance (DenseNet-121)
-- **Model Size**: 28.7 MB
-- **Inference Latency**: 45.2 ms (batch=1, GPU)
-- **Throughput**: 22.1 samples/sec
-- **Accuracy**: 76.2% (Top-1)
+### Baseline Performance (DenseNet-121, CUDA)
 
-### Optimized Performance Comparison
+* **Model Size**: 30.76 MB
+* **Latency**:
 
-| Optimization | Size Reduction | Speed Improvement | Accuracy Retention |
-|--------------|----------------|-------------------|-------------------|
-| Quantization | 75% | 2.5x | 99.5% |
-| Pruning | 40% | 1.6x | 97.2% |
-| Distillation | 60% | 3.6x | 93.6% |
-| TensorRT | - | 4.2x | 100% |
+  * Batch=1 → 48.22 ms
+  * Batch=4 → 165.30 ms
+  * Batch=8 → 108.21 ms
+* **Throughput**:
+
+  * Batch=1 → 20.74 samples/sec
+  * Batch=4 → 24.20 samples/sec
+  * Batch=8 → 73.93 samples/sec
+* **Accuracy (Top-1 / Top-5)**: Not measured (synthetic dataset)
+
+---
+
+### Quantized Model (Dynamic Quantization, CPU)
+
+* **Model Size**: 26.85 MB (~12.7% smaller)
+* **Latency**:
+
+  * Batch=1 → 178.12 ms
+  * Batch=4 → 556.05 ms
+  * Batch=8 → 1741.16 ms
+* **Throughput**:
+
+  * Batch=1 → 5.61 samples/sec
+  * Batch=4 → 7.19 samples/sec
+  * Batch=8 → 4.59 samples/sec
+* **Observation**: On CPU, quantization reduced memory footprint but **increased latency** compared to GPU baseline.
+
+---
+
+### Pruned Model (Structured Pruning, CUDA)
+
+* **Model Size**: 30.76 MB (no reduction in current run)
+* **Latency**:
+
+  * Batch=1 → 86.54 ms
+  * Batch=4 → 95.63 ms
+  * Batch=8 → 70.33 ms
+* **Throughput**:
+
+  * Batch=1 → 11.56 samples/sec
+  * Batch=4 → 41.83 samples/sec
+  * Batch=8 → 113.75 samples/sec
+* **Accuracy**: Top-5 = 10% (indicates accuracy degradation due to pruning)
+
+---
+
+### Distilled Model (Knowledge Distillation, CUDA)
+
+* **Model Size**: 0.81 MB (~97% smaller)
+* **Latency**:
+
+  * Batch=1 → 5.64 ms
+  * Batch=4 → 15.89 ms
+  * Batch=8 → 35.36 ms
+* **Throughput**:
+
+  * Batch=1 → 177.16 samples/sec
+  * Batch=4 → 251.72 samples/sec
+  * Batch=8 → 226.24 samples/sec
+* **Accuracy**: Not measured (synthetic dataset)
+
+---
 
 ## Trade-offs Discussion
 
 ### Performance vs. Accuracy
-- **Quantization**: Best balance of speed and accuracy retention
-- **Pruning**: Moderate gains with acceptable accuracy loss
-- **Distillation**: Highest speed gains but significant accuracy trade-off
-- **TensorRT**: Pure performance optimization without accuracy loss
+
+* **Baseline (CUDA)**: Balanced performance, reliable latency, and throughput but larger model size (30.76 MB).
+* **Quantization (CPU)**: Smaller size and CPU deployable, but higher latency and lower throughput compared to GPU baseline.
+* **Pruning (CUDA)**: Improved throughput at larger batch sizes, but pruning reduced accuracy significantly (Top-5 only ~10%).
+* **Distillation (CUDA)**: Extremely compact model with highest throughput and lowest latency, but accuracy validation required on real datasets.
+
+### Resource vs. Deployment Complexity
+
+* **CPU Quantized Models**: Best for environments without GPUs, though performance trade-offs are notable.
+* **GPU Pruned Models**: Provide efficiency gains but risk accuracy loss.
+* **Distilled Models**: Excellent for edge deployment due to small size and high speed, but may not generalize well.
+* **Baseline**: Safe and stable, but heavier resource footprint.
+
+Overall, the choice of optimization depends on **target deployment (edge, server, or cloud)** and the acceptable trade-off between **accuracy and efficiency**.
+
+
 
 ### Resource vs. Deployment Complexity
 - **CPU Optimization**: Simpler deployment, lower resource requirements
@@ -242,7 +310,6 @@ TensorBoard provides interactive visualizations:
 - Limited batch size testing (max 32)
 - Memory constraints on large models
 
-## Development Guide
 
 
 

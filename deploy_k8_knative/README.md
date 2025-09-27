@@ -24,6 +24,8 @@ knative-deployment/
 ├── deploy-knative.sh        # Deployment script
 ├── test_client.py           # Test client
 ├── cleanup.sh               # Cleanup script
+├── fix-networking.sh        # Create the networking fix script
+├── start-proxy.sh           # Then use the simple proxy
 └── README-KNative.md        # This file
 ```
 
@@ -48,13 +50,21 @@ chmod +x setup-cluster.sh
 chmod +x deploy-knative.sh
 ./deploy-knative.sh
 ```
+3. **Create the networking fix script**
+```bash
+./fix-networking.sh
+```
+4. **Then use the simple proxy**
+```bash
+./start-proxy.sh
+```
 
-3. **Test the deployment**:
+5. **Test the deployment**:
 ```bash
 python3 test_client.py
 ```
 
-4. **Cleanup when done**:
+6. **Cleanup when done**:
 ```bash
 chmod +x cleanup.sh
 ./cleanup.sh
@@ -62,13 +72,6 @@ chmod +x cleanup.sh
 
 ## 🔧 How It Works
 
-### The Registry Issue Solution
-
-The error you were getting happened because Kubernetes was trying to pull `densenet-inference:latest` from Docker Hub, but the image only existed locally. This solution fixes it by:
-
-1. **Building the image locally**: `docker build -t densenet-inference:latest .`
-2. **Loading into Kind cluster**: `kind load docker-image densenet-inference:latest --name cluster-name`
-3. **Using `imagePullPolicy: Never`** in the KNative service manifest
 
 ### Architecture
 
@@ -89,30 +92,28 @@ The error you were getting happened because Kubernetes was trying to pull `dense
 - **Flask API**: Lightweight REST API for inference
 - **Model Optimization**: TorchScript tracing for better performance
 - **Health Checks**: Readiness and liveness probes
-- **Auto-scaling**: Scale from 0 to 3 replicas based on demand
+- **Auto-scaling**: Scale from 1 to 3 replicas based on demand
 - **Resource Management**: CPU/Memory limits and requests
 
 ## 🌐 API Endpoints
 
-### Health Check
+### Health check
 ```bash
 curl http://localhost:8080/health
 ```
-
-### Root Information
+### Service info  
 ```bash
 curl http://localhost:8080/
 ```
 
-### Prediction
+### Prediction (with dummy base64 image)
 ```bash
 curl -X POST http://localhost:8080/predict \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image": "base64_encoded_image_here",
-    "batch_size": 1
-  }'
+  -H 'Content-Type: application/json' \
+  -d '{"image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "batch_size": 1}'
 ```
+
+
 
 ## 📊 Response Format
 
@@ -179,21 +180,32 @@ annotations:
 
 ### Common Issues
 
-1. **Service not starting**:
+1. **Kind Networking Issue**:
+   - **Problem**: Kind doesn't expose LoadBalancer services to the host by default. The service URL `http://densenet-inference.default.127.0.0.1.nip.io` may not reach the actual service, even though the pod is running fine (as shown in logs).
+   - **Solution**:
+     - **Port-forwarding**: Create a direct tunnel from localhost to the pod.
+     - **Simple access**: Use `http://localhost:8080` instead of the complex nip.io URL.
+     - **Works immediately**: No complex networking setup needed.
+     - Run the provided scripts to fix this:
+       ```bash
+       ./fix-networking.sh
+       ./start-proxy.sh
+
+2. **Service not starting**:
    ```bash
    kubectl describe ksvc densenet-inference
    kubectl logs -l serving.knative.dev/service=densenet-inference
    ```
 
-2. **Image pull errors**:
+3. **Image pull errors**:
    - Make sure you ran `kind load docker-image densenet-inference:latest --name densenet-knative-cluster`
    - Check that `imagePullPolicy: Never` is set in the service manifest
 
-3. **Health check failures**:
+4. **Health check failures**:
    - Check if the Flask app is starting correctly
    - Verify port 8080 is exposed and the health endpoint responds
 
-4. **Cluster not found**:
+5. **Cluster not found**:
    ```bash
    kind get clusters
    kubectl cluster-info --context kind-densenet-knative-cluster
