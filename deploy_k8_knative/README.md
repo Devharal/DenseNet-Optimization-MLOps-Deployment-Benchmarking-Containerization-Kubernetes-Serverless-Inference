@@ -51,7 +51,7 @@ chmod +x setup-cluster.sh
 chmod +x deploy-knative.sh
 ./deploy-knative.sh
 ```
-![Architecture](cmd1.png)
+![Architecture](results/cmd1.png)
 
 3. **Create the networking fix script**
 ```bash
@@ -61,7 +61,7 @@ chmod +x deploy-knative.sh
 ```bash
 ./start-proxy.sh
 ```
-![Architecture](cmd2.png)
+![Architecture](results/cmd2.png)
 
 5. **Test the deployment**:
 ```bash
@@ -109,7 +109,7 @@ curl http://localhost:8080/health
 ```bash
 curl http://localhost:8080/
 ```
-![Architecture](cmd3.png)
+![Architecture](results/cmd3.png)
 
 ### Prediction (with dummy base64 image)
 ```bash
@@ -117,7 +117,7 @@ curl -X POST http://localhost:8080/predict \
   -H 'Content-Type: application/json' \
   -d '{"image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "batch_size": 1}'
 ```
-![Architecture](cmd4.png)
+![Architecture](results/cmd4.png)
 
 
 
