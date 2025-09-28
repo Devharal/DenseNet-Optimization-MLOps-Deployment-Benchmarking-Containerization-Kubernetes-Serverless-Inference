@@ -41,6 +41,7 @@ knative-deployment/
 
 1. **Setup the Kind cluster with KNative**:
 ```bash
+cd deploy_k8_knative/
 chmod +x setup-cluster.sh
 ./setup-cluster.sh
 ```
@@ -50,6 +51,8 @@ chmod +x setup-cluster.sh
 chmod +x deploy-knative.sh
 ./deploy-knative.sh
 ```
+![Architecture](cmd1.png)
+
 3. **Create the networking fix script**
 ```bash
 ./fix-networking.sh
@@ -58,6 +61,7 @@ chmod +x deploy-knative.sh
 ```bash
 ./start-proxy.sh
 ```
+![Architecture](cmd2.png)
 
 5. **Test the deployment**:
 ```bash
@@ -105,6 +109,7 @@ curl http://localhost:8080/health
 ```bash
 curl http://localhost:8080/
 ```
+![Architecture](cmd3.png)
 
 ### Prediction (with dummy base64 image)
 ```bash
@@ -112,25 +117,9 @@ curl -X POST http://localhost:8080/predict \
   -H 'Content-Type: application/json' \
   -d '{"image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "batch_size": 1}'
 ```
+![Architecture](cmd4.png)
 
 
-
-## 📊 Response Format
-
-```json
-{
-  "predictions": [
-    {
-      "class_id": 281,
-      "class_name": "tabby_cat",
-      "confidence": 0.8934
-    }
-  ],
-  "latency_ms": 150.25,
-  "model_variant": "densenet121_optimized",
-  "batch_size": 1
-}
-```
 
 ## 🔍 Monitoring & Debugging
 
