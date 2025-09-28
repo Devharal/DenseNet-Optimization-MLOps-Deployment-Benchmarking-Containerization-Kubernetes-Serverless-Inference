@@ -160,18 +160,19 @@ results = benchmark.benchmark_model(model, "custom_test", "baseline")
 
 ```csv
 model_variant,batch_size,device,ram_usage_mb,vram_usage_mb,cpu_utilization_pct,gpu_utilization_pct,latency_ms,throughput_samples_sec,accuracy_top1,accuracy_top5,model_size_mb,optimization_technique
-densenet121_baseline,1,cuda,1392.81,803.0,0.0,7.0,48.22,20.74,0.0,0.0,30.76,none
-densenet121_baseline,4,cuda,1519.18,841.0,0.0,18.0,165.3,24.2,0.0,0.0,30.76,none
-densenet121_baseline,8,cuda,1624.21,899.0,0.0,20.0,108.21,73.93,0.0,0.0,30.76,none
-densenet121_quantized,1,cpu,1746.6,911.0,28.2,0.0,178.12,5.61,0.0,0.0,26.85,dynamic_quantization
-densenet121_quantized,4,cpu,1989.79,910.0,16.0,0.0,556.05,7.19,0.0,0.0,26.85,dynamic_quantization
-densenet121_quantized,8,cpu,2083.02,973.0,0.0,20.0,1741.16,4.59,0.0,0.0,26.85,dynamic_quantization
-densenet121_pruned,1,cuda,1893.55,951.0,0.0,29.0,86.54,11.56,0.0,10.0,30.76,structured_pruning
-densenet121_pruned,4,cuda,1897.82,935.0,0.0,2.0,95.63,41.83,0.0,0.0,30.76,structured_pruning
-densenet121_pruned,8,cuda,1903.8,936.0,1.7,25.0,70.33,113.75,0.0,0.0,30.76,structured_pruning
-densenet121_distilled,1,cuda,1957.11,943.0,7.7,3.0,5.64,177.16,0.0,0.0,0.81,knowledge_distillation
-densenet121_distilled,4,cuda,2134.99,954.0,18.5,22.0,15.89,251.72,0.0,0.0,0.81,knowledge_distillation
-densenet121_distilled,8,cuda,2286.11,954.0,15.7,21.0,35.36,226.24,0.0,0.0,0.81,knowledge_distillation
+densenet121_baseline,1,cuda,1572.97,821.0,0.0,5.0,46.07,21.71,0.0,0.0,30.76,none
+densenet121_baseline,4,cuda,1713.9,867.0,0.0,23.0,66.91,59.78,0.0,0.0,30.76,none
+densenet121_baseline,8,cuda,1859.14,925.0,0.0,9.0,57.98,137.97,0.0,0.0,30.76,none
+densenet121_quantized,1,cpu,1981.08,937.0,0.8,1.0,110.31,9.07,0.0,0.0,26.85,dynamic_quantization
+densenet121_quantized,4,cpu,2133.48,937.0,0.0,7.0,355.38,11.26,0.0,0.0,26.85,dynamic_quantization
+densenet121_quantized,8,cpu,2311.54,929.0,0.0,0.0,675.51,11.84,0.0,0.0,26.85,dynamic_quantization
+densenet121_pruned,1,cuda,2268.35,943.0,0.0,37.0,44.76,22.34,0.0,0.0,30.76,structured_pruning
+densenet121_pruned,4,cuda,2268.03,943.0,0.0,34.0,64.79,61.74,0.0,0.0,30.76,structured_pruning
+densenet121_pruned,8,cuda,2277.53,951.0,6.7,13.0,51.18,156.3,0.0,0.0,30.76,structured_pruning
+densenet121_distilled,1,cuda,2552.83,951.0,16.3,1.0,4.43,225.64,0.0,0.0,0.81,knowledge_distillation
+densenet121_distilled,4,cuda,2655.0,951.0,13.7,8.0,10.22,391.29,0.0,0.0,0.81,knowledge_distillation
+densenet121_distilled,8,cuda,2680.19,951.0,14.0,8.0,15.11,529.62,0.0,0.0,0.81,knowledge_distillation
+
 
 ```
 ### Visualization
@@ -186,99 +187,93 @@ TensorBoard provides interactive visualizations:
 
 ### Baseline Performance (DenseNet-121, CUDA)
 
-* **Model Size**: 30.76 MB
+* **Model Size**: 30.76 MB  
+* **RAM Usage**: 1572–1859 MB  
+* **VRAM Usage**: 821–925 MB  
 * **Latency**:
-
-  * Batch=1 → 48.22 ms
-  * Batch=4 → 165.30 ms
-  * Batch=8 → 108.21 ms
+  * Batch=1 → 46.07 ms  
+  * Batch=4 → 66.91 ms  
+  * Batch=8 → 57.98 ms  
 * **Throughput**:
+  * Batch=1 → 21.71 samples/sec  
+  * Batch=4 → 59.78 samples/sec  
+  * Batch=8 → 137.97 samples/sec  
+* **Accuracy (Top-1 / Top-5)**: Not measured (synthetic dataset)  
+![Architecture](images/baseline.png)  
 
-  * Batch=1 → 20.74 samples/sec
-  * Batch=4 → 24.20 samples/sec
-  * Batch=8 → 73.93 samples/sec
-* **Accuracy (Top-1 / Top-5)**: Not measured (synthetic dataset)
-![Architecture](images/baseline.png)
 ---
-
 
 ### Quantized Model (Dynamic Quantization, CPU)
 
-* **Model Size**: 26.85 MB (~12.7% smaller)
+* **Model Size**: 26.85 MB (~12.7% smaller)  
+* **RAM Usage**: 1981–2311 MB  
+* **VRAM Usage**: ~937 MB (constant)  
 * **Latency**:
-
-  * Batch=1 → 178.12 ms
-  * Batch=4 → 556.05 ms
-  * Batch=8 → 1741.16 ms
+  * Batch=1 → 110.31 ms  
+  * Batch=4 → 355.38 ms  
+  * Batch=8 → 675.51 ms  
 * **Throughput**:
+  * Batch=1 → 9.07 samples/sec  
+  * Batch=4 → 11.26 samples/sec  
+  * Batch=8 → 11.84 samples/sec  
+* **Observation**: Quantization reduced size but led to **significant latency increase** compared to GPU baseline.  
+![Architecture](images/quanized.png)  
 
-  * Batch=1 → 5.61 samples/sec
-  * Batch=4 → 7.19 samples/sec
-  * Batch=8 → 4.59 samples/sec
-* **Observation**: On CPU, quantization reduced memory footprint but **increased latency** compared to GPU baseline.
-![Architecture](images/quanized.png)
 ---
-
 
 ### Pruned Model (Structured Pruning, CUDA)
 
-* **Model Size**: 30.76 MB (no reduction in current run)
+* **Model Size**: 30.76 MB (no reduction)  
+* **RAM Usage**: ~2268–2277 MB  
+* **VRAM Usage**: 943–951 MB  
 * **Latency**:
-
-  * Batch=1 → 86.54 ms
-  * Batch=4 → 95.63 ms
-  * Batch=8 → 70.33 ms
+  * Batch=1 → 44.76 ms  
+  * Batch=4 → 64.79 ms  
+  * Batch=8 → 51.18 ms  
 * **Throughput**:
+  * Batch=1 → 22.34 samples/sec  
+  * Batch=4 → 61.74 samples/sec  
+  * Batch=8 → 156.30 samples/sec  
+* **Accuracy**: Not measured (synthetic dataset)  
+![Architecture](images/pruned.png)  
 
-  * Batch=1 → 11.56 samples/sec
-  * Batch=4 → 41.83 samples/sec
-  * Batch=8 → 113.75 samples/sec
-* **Accuracy**: Top-5 = 10% (indicates accuracy degradation due to pruning)
-![Architecture](images/pruned.png)
 ---
 
 ### Distilled Model (Knowledge Distillation, CUDA)
 
-* **Model Size**: 0.81 MB (~97% smaller)
+* **Model Size**: 0.81 MB (~97% smaller)  
+* **RAM Usage**: 2552–2680 MB  
+* **VRAM Usage**: 951 MB (constant)  
 * **Latency**:
-
-  * Batch=1 → 5.64 ms
-  * Batch=4 → 15.89 ms
-  * Batch=8 → 35.36 ms
+  * Batch=1 → 4.43 ms  
+  * Batch=4 → 10.22 ms  
+  * Batch=8 → 15.11 ms  
 * **Throughput**:
+  * Batch=1 → 225.64 samples/sec  
+  * Batch=4 → 391.29 samples/sec  
+  * Batch=8 → 529.62 samples/sec  
+* **Accuracy**: Not measured (synthetic dataset)  
+![Architecture](images/distilled.png)  
 
-  * Batch=1 → 177.16 samples/sec
-  * Batch=4 → 251.72 samples/sec
-  * Batch=8 → 226.24 samples/sec
-* **Accuracy**: Not measured (synthetic dataset)
-![Architecture](images/distilled.png)
 ---
 
 ## Trade-offs Discussion
 
 ### Performance vs. Accuracy
 
-* **Baseline (CUDA)**: Balanced performance, reliable latency, and throughput but larger model size (30.76 MB).
-* **Quantization (CPU)**: Smaller size and CPU deployable, but higher latency and lower throughput compared to GPU baseline.
-* **Pruning (CUDA)**: Improved throughput at larger batch sizes, but pruning reduced accuracy significantly (Top-5 only ~10%).
-* **Distillation (CUDA)**: Extremely compact model with highest throughput and lowest latency, but accuracy validation required on real datasets.
+* **Baseline (CUDA)**: Balanced performance with good latency and throughput; however, model size is relatively large (30.76 MB).  
+* **Quantization (CPU)**: Provides memory savings but shows **much worse latency and throughput**, making it unsuitable for real-time tasks unless GPU is unavailable.  
+* **Pruning (CUDA)**: Achieved slightly faster inference than baseline with higher throughput at batch=8, but model size didn’t reduce (due to current pruning config). Needs accuracy revalidation.  
+* **Distillation (CUDA)**: Extremely compact model with **drastically reduced latency** and **highest throughput**. Excellent candidate for deployment if accuracy holds up on real datasets.  
 
 ### Resource vs. Deployment Complexity
 
-* **CPU Quantized Models**: Best for environments without GPUs, though performance trade-offs are notable.
-* **GPU Pruned Models**: Provide efficiency gains but risk accuracy loss.
-* **Distilled Models**: Excellent for edge deployment due to small size and high speed, but may not generalize well.
-* **Baseline**: Safe and stable, but heavier resource footprint.
+* **CPU Quantized Models**: Deployable where GPUs aren’t available, but the trade-off is very poor latency.  
+* **GPU Pruned Models**: Efficient in larger batch sizes, though memory usage increases. Needs tuning for real-world accuracy.  
+* **Distilled Models**: Ideal for **edge devices or large-scale inference** because of minimal size and superior throughput.  
+* **Baseline**: Safe and reliable, but resource-heavy.  
 
-Overall, the choice of optimization depends on **target deployment (edge, server, or cloud)** and the acceptable trade-off between **accuracy and efficiency**.
-
-
-
-### Resource vs. Deployment Complexity
-- **CPU Optimization**: Simpler deployment, lower resource requirements
-- **GPU Optimization**: Higher performance but increased infrastructure complexity
-- **Serverless**: Auto-scaling benefits vs. cold-start latency
-
+👉 The final choice depends on whether the **deployment target prioritizes GPU/CPU availability, throughput, or memory efficiency**.
 
 ## Known Limitations
 
