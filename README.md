@@ -15,7 +15,7 @@ A comprehensive MLOps solution for benchmarking and optimizing DenseNet-121 arch
 - [Performance Benchmarks](#performance-benchmarks)
 - [Trade-offs Discussion](#trade-offs-discussion)
 - [Known Limitations](#known-limitations)
-- [Future Improvements](#future-improvements)
+- [Deployment with KNative](#deployment-with-knative)
 
 ## Project Overview
 
@@ -302,3 +302,21 @@ Overall, the choice of optimization depends on **target deployment (edge, server
 
 
 
+## Deployment with KNative
+### Bonus Challenge
+
+As an advanced exercise, you can deploy this project using **Knative**.  
+We’ve prepared a detailed step-by-step guide for you:
+
+👉 [Deployment with Knative Guide](/deploy_k8_knative/README.md)
+
+This bonus challenge will help you explore:
+- Knative Serving for serverless deployment
+- Autoscaling and traffic splitting
+- Easy deployment on Kubernetes
+
+Feel free to check out the guide and try deploying it yourself!
+
+### Deployment without KNative
+
+👉 [Deployment without Knative Guide](/deploy_k8_fastapi/README.md)
