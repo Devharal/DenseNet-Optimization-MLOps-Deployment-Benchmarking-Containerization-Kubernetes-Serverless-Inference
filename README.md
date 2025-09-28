@@ -198,8 +198,9 @@ TensorBoard provides interactive visualizations:
   * Batch=4 → 24.20 samples/sec
   * Batch=8 → 73.93 samples/sec
 * **Accuracy (Top-1 / Top-5)**: Not measured (synthetic dataset)
-
+![Architecture](images/baseline.png)
 ---
+
 
 ### Quantized Model (Dynamic Quantization, CPU)
 
@@ -215,8 +216,9 @@ TensorBoard provides interactive visualizations:
   * Batch=4 → 7.19 samples/sec
   * Batch=8 → 4.59 samples/sec
 * **Observation**: On CPU, quantization reduced memory footprint but **increased latency** compared to GPU baseline.
-
+![Architecture](images/quanized.png)
 ---
+
 
 ### Pruned Model (Structured Pruning, CUDA)
 
@@ -232,7 +234,7 @@ TensorBoard provides interactive visualizations:
   * Batch=4 → 41.83 samples/sec
   * Batch=8 → 113.75 samples/sec
 * **Accuracy**: Top-5 = 10% (indicates accuracy degradation due to pruning)
-
+![Architecture](images/pruned.png)
 ---
 
 ### Distilled Model (Knowledge Distillation, CUDA)
@@ -249,7 +251,7 @@ TensorBoard provides interactive visualizations:
   * Batch=4 → 251.72 samples/sec
   * Batch=8 → 226.24 samples/sec
 * **Accuracy**: Not measured (synthetic dataset)
-
+![Architecture](images/distilled.png)
 ---
 
 ## Trade-offs Discussion
